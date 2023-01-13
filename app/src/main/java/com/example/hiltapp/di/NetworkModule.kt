@@ -26,6 +26,7 @@ class NetworkModule {
         if (BuildConfig.DEBUG) {
             mLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         }
+
         return OkHttpClient.Builder()
             .addInterceptor(mLoggingInterceptor)
             .connectTimeout(120, TimeUnit.SECONDS)
