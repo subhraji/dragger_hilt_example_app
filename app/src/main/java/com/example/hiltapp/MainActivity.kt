@@ -5,23 +5,20 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.hiltapp.databinding.ActivityMainBinding
-import com.example.hiltapp.repository.Outcome
-import com.example.hiltapp.viewmodels.GetTodosViewModel
+import com.example.hiltapp.service.MyService
 import com.example.hiltapp.viewmodels.NewViewModel
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
-import org.w3c.dom.Text
+import java.util.*
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -29,11 +26,23 @@ class MainActivity : AppCompatActivity() {
     private val mainViewModel: NewViewModel by viewModels()
     private var CHANNEL_ID = "101"
 
+    private val timer: Timer? = Timer()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.progressBar.visibility = View.GONE
+
+
+        startService(Intent(baseContext, MyService::class.java))
+
+        binding.msgTv.setOnClickListener {
+            stopService(Intent(baseContext, MyService::class.java))
+        }
+        /*timer?.scheduleAtFixedRate(timerTask {
+            Log.e("NIlu_TAG","Hello World")
+        },0,10000)*/
 
 /*
         mainViewModel.response.observe(this, Observer { outcome ->
@@ -55,9 +64,9 @@ class MainActivity : AppCompatActivity() {
         })
 */
 
-        createNotificationChannel()
+        /*createNotificationChannel()
         getToken()
-        subscribeToTopic()
+        subscribeToTopic()*/
 
     }
 
@@ -113,6 +122,14 @@ class MainActivity : AppCompatActivity() {
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
 
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        timer?.let {
+            timer.cancel()
         }
     }
 }
