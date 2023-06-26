@@ -26,6 +26,13 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel = ViewModelProvider(this).get(GetTodosViewModel::class.java)
 
+
+        //observe
+        //observeApiCall()
+    }
+
+
+    private fun observeApiCall(){
         mainViewModel.todosLiveData.observe(this, Observer { outcome ->
             when(outcome){
                 is Outcome.Success ->{
@@ -44,6 +51,5 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
-
     }
 }
