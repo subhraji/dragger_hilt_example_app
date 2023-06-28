@@ -4,12 +4,15 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.hiltapp.databinding.ActivityMainBinding
 import com.example.hiltapp.repository.Outcome
+import com.example.hiltapp.viewmodels.ChangeLangViewModel
 import com.example.hiltapp.viewmodels.GetTodosViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -19,22 +22,23 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    lateinit var mainViewModel: GetTodosViewModel
+    private val mainViewModel: GetTodosViewModel by viewModels()
+    private val changeLangViewModel: ChangeLangViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mainViewModel = ViewModelProvider(this).get(GetTodosViewModel::class.java)
-
         loadLocal()
+        /*val preferences = application.getSharedPreferences("Settings", AppCompatActivity.MODE_PRIVATE)
+        val language: String = preferences.getString("app_lang","").toString()
+        changeLangViewModel.setLocal(application, language)*/
+
         binding.changeLangBtn.setOnClickListener {
             changeLanguage()
         }
 
-        //observe
-        //observeApiCall()
     }
 
     private fun changeLanguage(){
@@ -76,23 +80,31 @@ class MainActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
-    private fun setLocal(language: String){
+    fun setLocal(language: String){
         var local: Locale = Locale(language)
         Locale.setDefault(local)
-        var configuration: Configuration = Configuration()
-        configuration.setLocale(local)
-        baseContext.resources.updateConfiguration(configuration, baseContext.resources.displayMetrics)
+        var config: Configuration = Configuration()
+        //config.setLocale(local)
+        config.locale = local
+        baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
+
 
         val sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE)
         val myEdit = sharedPreferences.edit()
         myEdit.putString("app_lang", language)
         myEdit.apply()
+
     }
 
     private fun loadLocal(){
         val preferences = getSharedPreferences("Settings", MODE_PRIVATE)
         val language: String = preferences.getString("app_lang","").toString()
         setLocal(language)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Log.i("app_lang", "new config =>")
     }
 
     private fun observeApiCall(){
@@ -115,4 +127,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
+
+    //https://www.geeksforgeeks.org/how-to-change-the-whole-app-language-in-android-programmatically/
 }
