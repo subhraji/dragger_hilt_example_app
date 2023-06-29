@@ -9,11 +9,13 @@ class MyApplication : Application(){
 
     override fun onCreate() {
         super.onCreate()
+        application = this
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-
+    companion object{
+        lateinit var application: Application
+        fun getInstance(): Application{
+            return application
+        }
     }
-
 }

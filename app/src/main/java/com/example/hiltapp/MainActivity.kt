@@ -1,6 +1,7 @@
 package com.example.hiltapp
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.hiltapp.databinding.ActivityMainBinding
 import com.example.hiltapp.repository.Outcome
+import com.example.hiltapp.ui.activity.DataBindingTestActivity
+import com.example.hiltapp.utils.LocaleHelper
+import com.example.hiltapp.utils.PrefManager
 import com.example.hiltapp.viewmodels.ChangeLangViewModel
 import com.example.hiltapp.viewmodels.GetTodosViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,60 +35,37 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         loadLocal()
-        /*val preferences = application.getSharedPreferences("Settings", AppCompatActivity.MODE_PRIVATE)
-        val language: String = preferences.getString("app_lang","").toString()
-        changeLangViewModel.setLocal(application, language)*/
-
         binding.changeLangBtn.setOnClickListener {
             changeLanguage()
         }
 
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.i("state", "state => onStart")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i("state", "state => onResume")
+        binding.nextBtn.setOnClickListener {
+            val intent = Intent(this, DataBindingTestActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun changeLanguage(){
-        // initialise the list items for the alert dialog
         val listItems = arrayOf("English", "Assamese")
         val checkedItems = BooleanArray(listItems.size)
-
-        // copy the items from the main list to the selected item list for the preview
-        // if the item is checked then only the item should be displayed for the user
         val selectedItems = mutableListOf(*listItems)
-
-        // initialise the alert dialog builder
         val builder = AlertDialog.Builder(this)
-
-        // set the title for the alert dialog
         builder.setTitle("Choose Language")
-
-        // set the icon for the alert dialog
         builder.setIcon(R.drawable.ic_launcher_foreground)
 
-
-        // now this is the function which sets the alert dialog for multiple item selection ready
         builder.setMultiChoiceItems(listItems, checkedItems) { dialog, which, isChecked ->
             checkedItems[which] = isChecked
             val currentItem = selectedItems[which]
-
             if(which == 0){
-                setLocal("en")
-                /*context = LocaleHelper.setLocale(this, "en");
-                val resources = context?.getResources()*/
+                //setLocal("en")
+                context = LocaleHelper.setLocale(this, "en")
+                initUi()
                 //recreate()
                 dialog.dismiss()
             }else if(which == 1){
-                setLocal("as")
-                /*context = LocaleHelper.setLocale(this, "as");
-                val resources = context?.getResources()*/
+                //setLocal("as")
+                context = LocaleHelper.setLocale(this, "as")
+                initUi()
                 //recreate()
                 dialog.dismiss()
             }
@@ -97,33 +78,9 @@ class MainActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
-    fun setLocal(language: String){
-        var local: Locale = Locale(language)
-        Locale.setDefault(local)
-        var config: Configuration = Configuration()
-        //config.setLocale(local)
-        config.locale = local
-        baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
-
-
-        val sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE)
-        val myEdit = sharedPreferences.edit()
-        myEdit.putString("app_lang", language)
-        myEdit.apply()
-
-        binding.msgTv.setText(resources.getString(R.string.hello_world))
-        binding.newMsgTv.text = resources.getString(R.string.how_are_you)
-    }
-
     private fun loadLocal(){
-        val preferences = getSharedPreferences("Settings", MODE_PRIVATE)
-        val language: String = preferences.getString("app_lang","").toString()
-        setLocal(language)
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        Log.i("state", "new config =>")
+        PrefManager.getLang()?.let { LocaleHelper.setLocale(this, it) }
+        initUi()
     }
 
     private fun observeApiCall(){
@@ -147,6 +104,10 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun initUi(){
+        binding.msgTv.text = resources.getString(R.string.hello_world)
+        binding.newMsgTv.text = resources.getString(R.string.how_are_you)
+        binding.nextBtn.text = resources.getString(R.string.next)
+    }
 
-    //https://www.geeksforgeeks.org/how-to-change-the-whole-app-language-in-android-programmatically/
 }

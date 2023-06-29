@@ -2,4 +2,7 @@
     <string name="app_name">Hilt App</string>
     <string name="hello_world">Hello world</string>
     <string name="how_are_you">How Are You?</string>
+    <string name="next">Next</string>
+    <string name="welcome">welcome</string>
+
 </resources>
