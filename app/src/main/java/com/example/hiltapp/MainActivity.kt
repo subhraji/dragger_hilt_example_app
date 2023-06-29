@@ -1,5 +1,6 @@
 package com.example.hiltapp
 
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -8,8 +9,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.example.hiltapp.databinding.ActivityMainBinding
 import com.example.hiltapp.repository.Outcome
 import com.example.hiltapp.viewmodels.ChangeLangViewModel
@@ -24,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: GetTodosViewModel by viewModels()
     private val changeLangViewModel: ChangeLangViewModel by viewModels()
+    var context: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +39,16 @@ class MainActivity : AppCompatActivity() {
             changeLanguage()
         }
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i("state", "state => onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i("state", "state => onResume")
     }
 
     private fun changeLanguage(){
@@ -59,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         // set the icon for the alert dialog
         builder.setIcon(R.drawable.ic_launcher_foreground)
 
+
         // now this is the function which sets the alert dialog for multiple item selection ready
         builder.setMultiChoiceItems(listItems, checkedItems) { dialog, which, isChecked ->
             checkedItems[which] = isChecked
@@ -66,10 +77,16 @@ class MainActivity : AppCompatActivity() {
 
             if(which == 0){
                 setLocal("en")
-                recreate()
+                /*context = LocaleHelper.setLocale(this, "en");
+                val resources = context?.getResources()*/
+                //recreate()
+                dialog.dismiss()
             }else if(which == 1){
                 setLocal("as")
-                recreate()
+                /*context = LocaleHelper.setLocale(this, "as");
+                val resources = context?.getResources()*/
+                //recreate()
+                dialog.dismiss()
             }
         }
 
@@ -94,6 +111,8 @@ class MainActivity : AppCompatActivity() {
         myEdit.putString("app_lang", language)
         myEdit.apply()
 
+        binding.msgTv.setText(resources.getString(R.string.hello_world))
+        binding.newMsgTv.text = resources.getString(R.string.how_are_you)
     }
 
     private fun loadLocal(){
@@ -104,7 +123,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        Log.i("app_lang", "new config =>")
+        Log.i("state", "new config =>")
     }
 
     private fun observeApiCall(){
