@@ -22,4 +22,8 @@ object RegistrationUtil {
         }
         return true 
     }
+
+    fun checkBraces(string: String): Boolean{
+        return string.count {it == '('} == string.count { it == ')' }
+    }
 }

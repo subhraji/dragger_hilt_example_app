@@ -64,4 +64,22 @@ class RegistrationUtilTest{
         )
         assertThat(result).isFalse()
     }
+
+    @Test
+    fun `string contains correct braces returns true`(){
+        val result = RegistrationUtil.checkBraces("()")
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun `string contains reverse braces returns false`(){
+        val result = RegistrationUtil.checkBraces(")(")
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun `string contains same braces returns false`(){
+        val result = RegistrationUtil.checkBraces("(()")
+        assertThat(result).isFalse()
+    }
 }
