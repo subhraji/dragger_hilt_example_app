@@ -100,6 +100,8 @@ class MainActivity : AppCompatActivity() {
                     outcome.e.printStackTrace()
                     Log.i("status",outcome.e.cause.toString())
                 }
+
+                is Outcome.Progress -> TODO()
             }
         })
     }
