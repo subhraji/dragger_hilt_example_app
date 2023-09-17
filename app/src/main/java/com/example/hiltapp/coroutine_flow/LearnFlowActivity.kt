@@ -1,11 +1,13 @@
 package com.example.hiltapp.coroutine_flow
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.example.hiltapp.R
 import com.example.hiltapp.databinding.ActivityDataBindingTestBinding
 import com.example.hiltapp.databinding.ActivityLearnFlowBinding
+import com.example.hiltapp.model.GetTodosResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +51,17 @@ class LearnFlowActivity : AppCompatActivity() {
                 Log.e(TAG, "2nd consumer => ${it}")
             }
         }*/
-        consumeStateFlow()
+        //consumeStateFlow()
+
+
+        //broadcast receiver
+        val _intent: Intent = intent
+        val action = _intent.action
+        val type = _intent.type
+        if(Intent.ACTION_SEND.equals(action) && type != null){
+            binding.image.setImageURI(_intent.getParcelableExtra(Intent.EXTRA_STREAM))
+        }
+
     }
 
     // example of flow
@@ -132,8 +144,8 @@ Flow has two type of operator:
         if there is no consumer to collect data then the flow producer does not produces or emits data.
 
      shared flow is hot in nature i.e sharedFlow is a hot flow
-        in shared flow multiple consumers get same data if a consumer starts consuming tha data a bil late then that
-        consumer will get the data from that state. from 1 - 2 - 3 - 4 -5 in this case the late comer consumer wiill
+        in shared flow multiple consumers get same data if a consumer starts consuming tha data a bit late then that
+        consumer will get the data from that state. from 1 - 2 - 3 - 4 -5 in this case the late comer consumer will get
         the data from 3 to 5 if the consumer joins from 3
 
 
@@ -146,7 +158,7 @@ Flow has two type of operator:
 
       //////////////// Livedata  vs   StateFlow //////////////////
 
-      1. live data is life cycle dependent but stateflow is coroutine scope dependent. e.g can use live date in repo
+      1. live data is life cycle dependent but stateflow is coroutine scope dependent. e.g can not use live date in repo
              as repository does not has any lifecycle.
       2. Live data operator runs on main thread but stateflow runs on coroutine scope and can be easily switch scope.
 
