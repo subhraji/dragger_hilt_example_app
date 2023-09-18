@@ -3,6 +3,7 @@
     package="com.example.hiltapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".MyApplication"
@@ -14,21 +15,39 @@
         android:theme="@style/Theme.HiltApp"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".coroutine_flow.LearnFlowActivity"
+            android:name=".broad_cast_reciever.TestBroadCastReceiverActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.SEND"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="image/*"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".coroutine_flow.LearnFlowActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.activity.DataBindingTestActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true"/>
+            android:exported="true" />
+
+        <!--//static broadcast receiver register
+        <receiver
+            android:name=".broad_cast_reciever.ExampleBroadCastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>-->
     </application>
+
 </manifest>
