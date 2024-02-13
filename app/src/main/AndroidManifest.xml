@@ -14,7 +14,7 @@
         android:theme="@style/Theme.HiltApp"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".broad_cast_reciever.TestBroadCastReceiverActivity"
+            android:name=".dragger2.DraggerActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,13 +22,15 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".broad_cast_reciever.TestBroadCastReceiverActivity"
+            android:exported="true">
+        </activity>
+        <activity
             android:name=".coroutine_flow.LearnFlowActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
@@ -38,28 +40,27 @@
         <activity
             android:name=".MainActivity"
             android:exported="true" />
-
-        <!--//static broadcast receiver register
+        <!--
+//static broadcast receiver register
         <receiver
             android:name=".broad_cast_reciever.ExampleBroadCastReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-        </receiver>-->
+        </receiver>
+        -->
         <receiver
             android:name=".broad_cast_reciever.OrderedReceiver2"
             android:exported="true">
-            <intent-filter
-                android:priority="2">
+            <intent-filter android:priority="2">
                 <action android:name="com.example.test" />
             </intent-filter>
         </receiver>
         <receiver
             android:name=".broad_cast_reciever.OrderedReceiver3"
             android:exported="true">
-            <intent-filter
-                android:priority="3">
+            <intent-filter android:priority="3">
                 <action android:name="com.example.test" />
             </intent-filter>
         </receiver>
